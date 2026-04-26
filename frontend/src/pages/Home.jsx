@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { analyze, improve, pay } from "../services/api";
 
