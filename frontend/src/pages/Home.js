@@ -6,25 +6,25 @@ export default function Home() {
   const [jd, setJd] = useState("");
   const [result, setResult] = useState(null);
   const [locked, setLocked] = useState(true);
-  const [improveText, setImproveText] = useState("");
+  const [improved, setImproved] = useState("");
 
-  const run = async () => {
+  const handleAnalyze = async () => {
     const res = await analyze({ resume, jd });
     setResult(res.data);
   };
 
-  const unlock = async () => {
+  const handleUnlock = async () => {
     const order = await pay();
 
     const rzp = new window.Razorpay({
-      key: "rzp_test_xxx",
+      key: "rzp_test_xxx", // replace
       amount: order.data.amount,
       currency: "INR",
       order_id: order.data.id,
       handler: async () => {
         setLocked(false);
         const imp = await improve({ resume, jd });
-        setImproveText(imp.data.result);
+        setImproved(imp.data.result);
       }
     });
 
@@ -32,43 +32,45 @@ export default function Home() {
   };
 
   return (
-    <div className="p-6 text-center">
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
+      <h1>ATS Resume Pro 🚀</h1>
 
-      <h1 className="text-4xl font-bold">
-        ATS Resume Checker 🚀
-      </h1>
+      <textarea
+        placeholder="Paste Resume"
+        onChange={(e) => setResume(e.target.value)}
+        style={{ width: "100%", height: "100px" }}
+      />
 
-      <textarea placeholder="Paste Resume"
-        onChange={(e)=>setResume(e.target.value)}
-        className="border w-full mt-4 p-2" />
+      <textarea
+        placeholder="Paste Job Description"
+        onChange={(e) => setJd(e.target.value)}
+        style={{ width: "100%", height: "100px", marginTop: "10px" }}
+      />
 
-      <textarea placeholder="Paste Job Description"
-        onChange={(e)=>setJd(e.target.value)}
-        className="border w-full mt-4 p-2" />
-
-      <button onClick={run} className="bg-blue-500 text-white p-2 mt-4">
-        Check Score
+      <button onClick={handleAnalyze} style={{ marginTop: "10px" }}>
+        Check ATS Score
       </button>
 
       {result && (
-        <div className="mt-6">
-
-          <h2 className="text-3xl">{result.score}%</h2>
+        <div style={{ marginTop: "20px" }}>
+          <h2>{result.score}% Match</h2>
 
           {result.score < 60 && (
-            <p className="text-red-500 animate-pulse">
+            <p style={{ color: "red" }}>
               ⚠️ Your resume may get rejected!
             </p>
           )}
 
-          <button onClick={unlock} className="bg-black text-white mt-4 p-2">
+          <button onClick={handleUnlock}>
             Unlock Improvements ₹21
           </button>
 
-          <div className={locked ? "blur-md mt-4" : "mt-4"}>
-            {improveText || "AI suggestions will appear here..."}
+          <div style={{
+            filter: locked ? "blur(5px)" : "none",
+            marginTop: "10px"
+          }}>
+            {improved || "AI suggestions will appear here..."}
           </div>
-
         </div>
       )}
     </div>
