@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { analyze, improve, pay } from "../services/api.jsx";
+import { analyze, improve, pay } from "../services/api";
 
 export default function Home() {
   const [resume, setResume] = useState("");
